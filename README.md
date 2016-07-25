@@ -1,4 +1,4 @@
-# frontend-starter-kit
+# Frontend Starter Kit
 
 ### Install npm dependencies
 

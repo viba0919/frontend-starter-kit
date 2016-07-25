@@ -1,0 +1,8 @@
+{
+  "globals": {
+  },
+  "env": {
+    "browser": true,
+    "jquery": true
+  }
+}

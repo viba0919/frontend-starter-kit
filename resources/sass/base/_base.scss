@@ -1,0 +1,13 @@
+html,
+body {
+    @include size(100%);
+}
+
+body {
+    max-width: $maw-body;
+    min-width: $miw-body;
+}
+
+main {
+    @include size(100%);
+}

@@ -1,0 +1,16 @@
+# Custom files and folders
+__stuff/
+
+# Directories for IDE
+.idea/
+
+# Directories for VM
+log/
+
+# npm and bower directories
+node_modules/
+resources/vendor/**
+
+# Generated files and folders
+public/
+resources/css/sass.css

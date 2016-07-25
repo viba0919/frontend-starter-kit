@@ -31,7 +31,6 @@ var production = false,
         }
     },
 
-
     config = {
         css: {
             concat: [

@@ -1,16 +1,16 @@
 # frontend-starter-kit
 
-## Install npm dependencies
+### Install npm dependencies
 
 npm install
 
 
-## Install bower dependencies
+### Install bower dependencies
 
 bower install
 
 
-## Gulp tasks
+### Gulp tasks
 
 Task name | Description
 --------- | -----------

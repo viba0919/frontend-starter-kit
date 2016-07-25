@@ -16,11 +16,11 @@ var production = false,
     dirSourceCss         = dirSource + 'css/',
     dirSourceSass        = dirSource + 'sass/',
     dirSourceJs          = dirSource + 'js/',
-    dirSourceJade        = dirSource + 'jade/',
     dirSourceJsUtilities = dirSourceJs + 'utilities/',
-    dirSourceVendor       = dirSource + 'vendor/',
+    dirSourceJade        = dirSource + 'jade/',
+    dirSourceVendor      = dirSource + 'vendor/',
 
-    filename = {
+    fileNames = {
         css: {
             main: 'app.css',
             sass: 'sass.css'
@@ -31,41 +31,56 @@ var production = false,
         }
     },
 
-    configCss = {
-        concat: [
-            // ---> Add path to new plugin .css file here
-            dirSourceCss + filename.css.sass
-        ],
-        lint: [
-            dirSourceSass + '**/*.scss'
-        ]
-    },
 
-    configJade = [
-        dirSource + 'jade/*.jade'
-    ],
-
-    configJs = {
-        concat: {
-            main: [
+    config = {
+        css: {
+            concat: [
+                // ---> Add path to new plugin .css file here
+                dirSourceCss + fileNames.css.sass
+            ]
+        },
+        sass: {
+            compile: [
+                dirSourceSass + '*.scss'
+            ],
+            lint: [
+                dirSourceSass + '**/*.scss'
+            ],
+            watch: [
+                dirSourceSass + '**/*.scss'
+            ]
+        },
+        jade: {
+            compile: [
+                dirSource + 'jade/*.jade'
+            ],
+            watch: [
+                dirSourceJade + '**/*.jade'
+            ]
+        },
+        js: {
+            concat: [
                 // Vendors
                 dirSourceVendor + 'jquery/dist/jquery.js',
                 dirSourceVendor + 'bootstrap-sass/assets/javascripts/bootstrap.js',
-				// ---> Add path to new plugin .js file here
+                // ---> Add path to new plugin .js file here
 
                 // Utilities
                 dirSourceJsUtilities + '**/*.js'
+            ],
+            lint: [
+                dirSourceJs + '**/*.js',
+                '!node_modules/**'
+            ],
+            watch: [
+                dirSourceJsUtilities + '**/*.js'
             ]
-        },
-        lint: [
-            dirSourceJs + '**/*.js',
-            '!node_modules/**'
-        ]
+        }
     },
 
     onError = function(err) {
         notify.onError({
-            title: "Gulp",
+            title: "Gulp onError()",
             message: "Error: <%= error.message %>"
         })(err);
 
@@ -74,7 +89,12 @@ var production = false,
 
     options = {
         autoprefixer: {
-            browsers: ['last 2 versions', '> 5%']
+            browsers: [
+                'last 2 versions', '> 5%'
+            ]
+        },
+        concatCss: {
+            rebaseUrls: false
         },
         cssBeautify: {
             autosemicolon: true,
@@ -93,18 +113,6 @@ var production = false,
         jade: {
             pretty: true
         }
-    },
-
-    watch = {
-        sass: [
-            dirSourceSass + '**/*.scss'
-        ],
-        js: [
-            dirSourceJsUtilities + '**/*.js'
-        ],
-        jade: [
-            dirSourceJade + '**/*.jade'
-        ]
     };
 
 
@@ -139,16 +147,14 @@ var gulp         = require('gulp'),
  ******************************************************
  */
 gulp.task('concat-css', function () {
-    return gulp.src(configCss.concat)
-        .pipe(concatCss(filename.css.main, {
-            rebaseUrls: false
-        }))
+    return gulp.src(config.css.concat)
+        .pipe(concatCss(fileNames.css.main, options.concatCss))
         .pipe(gulpIf(production, minifyCSS(), cssBeautify(options.cssBeautify)))
         .pipe(gulp.dest(dirPublicCss));
 });
 
 gulp.task('compile-sass', function () {
-    return gulp.src(dirSourceSass + '*.scss')
+    return gulp.src(config.sass.compile)
         .pipe(plumber(options.plumber))
         .pipe(sass().on('error', sass.logError))
         .pipe(autoprefixer(options.autoprefixer))
@@ -156,7 +162,7 @@ gulp.task('compile-sass', function () {
 });
 
 gulp.task('lint-sass', function () {
-    return gulp.src(configCss.lint)
+    return gulp.src(config.sass.lint)
         .pipe(sassLint())
         .pipe(sassLint.format())
         .pipe(sassLint.failOnError())
@@ -170,15 +176,15 @@ gulp.task('lint-sass', function () {
  ******************************************************
  */
 gulp.task('concat-js', function() {
-    return gulp.src(configJs.concat.main)
+    return gulp.src(config.js.concat)
         .pipe(plumber(options.plumber))
-        .pipe(concat(filename.js.main))
+        .pipe(concat(fileNames.js.main))
         .pipe(gulpIf(production, uglify(), prettify(options.prettify)))
         .pipe(gulp.dest(dirPublicJs));
 });
 
 gulp.task('lint-js', function () {
-    return gulp.src(configJs.lint)
+    return gulp.src(config.js.lint)
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
@@ -192,7 +198,7 @@ gulp.task('lint-js', function () {
  ******************************************************
  */
 gulp.task('compile-jade', function() {
-    gulp.src(configJade)
+    gulp.src(config.jade.compile)
         .pipe(plumber(options.plumber))
         .pipe(jade(options.jade))
         .pipe(gulp.dest(dirPublic))
@@ -230,15 +236,15 @@ gulp.task('default', function() {
  ******************************************************
  */
 gulp.task('watch', ['build-dev'], function () {
-    gulp.watch(watch.sass, function() {
+    gulp.watch(config.sass.watch, function() {
         runSequence('compile-sass', 'concat-css');
     });
 
-    gulp.watch(watch.js, function() {
+    gulp.watch(config.js.watch, function() {
         runSequence('concat-js');
     });
 
-    gulp.watch(watch.jade, function() {
+    gulp.watch(config.jade.watch, function() {
         runSequence('compile-jade');
     });
 });

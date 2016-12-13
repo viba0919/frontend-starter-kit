@@ -16,4 +16,4 @@ Task name | Description
 --------- | -----------
 gulp | Build project
 gulp watch | Build project and watch files
-gulp lint | Lint scss and js files
+gulp lint | Lint .scss and .js files

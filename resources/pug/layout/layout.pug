@@ -1,0 +1,16 @@
+include ../base/vars
+include ../base/mixin
+
+doctype html
+html(lang="lt")
+    head
+        include ./blocks/meta
+        title= pageTitle
+        include ./blocks/style
+        include ./blocks/script
+    body
+        include ../blocks/header
+        main
+            block content
+        include ../blocks/footer
+        include ./blocks/script-bottom

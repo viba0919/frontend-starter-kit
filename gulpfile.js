@@ -17,7 +17,7 @@ var production = false,
     dirSourceSass        = dirSource + 'sass/',
     dirSourceJs          = dirSource + 'js/',
     dirSourceJsUtilities = dirSourceJs + 'utilities/',
-    dirSourceJade        = dirSource + 'jade/',
+    dirSourcePug         = dirSource + 'pug/',
     dirSourceVendor      = dirSource + 'vendor/',
 
     fileNames = {
@@ -49,12 +49,12 @@ var production = false,
                 dirSourceSass + '**/*.scss'
             ]
         },
-        jade: {
+        pug: {
             compile: [
-                dirSource + 'jade/*.jade'
+                dirSource + 'pug/*.pug'
             ],
             watch: [
-                dirSourceJade + '**/*.jade'
+                dirSourcePug + '**/*.pug'
             ]
         },
         js: {
@@ -109,7 +109,7 @@ var production = false,
                 'end_with_newline': true
             }
         },
-        jade: {
+        pug: {
             pretty: true
         }
     };
@@ -136,7 +136,7 @@ var gulp         = require('gulp'),
     sassLint     = require('gulp-sass-lint'),
     uglify       = require('gulp-uglify'),
     runSequence  = require('run-sequence'),
-    jade         = require('gulp-jade');
+    pug          = require('gulp-pug');
 
 
 
@@ -196,10 +196,10 @@ gulp.task('lint-js', function () {
  *  Jade
  ******************************************************
  */
-gulp.task('compile-jade', function() {
-    gulp.src(config.jade.compile)
+gulp.task('compile-pug', function() {
+    gulp.src(config.pug.compile)
         .pipe(plumber(options.plumber))
-        .pipe(jade(options.jade))
+        .pipe(pug(options.pug))
         .pipe(gulp.dest(dirPublic))
 });
 
@@ -217,7 +217,7 @@ gulp.task('lint', function() {
 
 gulp.task('build-dev', function() {
     return runSequence(
-        ['compile-sass', 'concat-js', 'compile-jade'],
+        ['compile-sass', 'concat-js', 'compile-pug'],
         'concat-css'
     );
 });
@@ -243,7 +243,7 @@ gulp.task('watch', ['build-dev'], function () {
         runSequence('concat-js');
     });
 
-    gulp.watch(config.jade.watch, function() {
-        runSequence('compile-jade');
+    gulp.watch(config.pug.watch, function() {
+        runSequence('compile-pug');
     });
 });

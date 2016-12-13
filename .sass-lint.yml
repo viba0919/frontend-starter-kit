@@ -10,27 +10,33 @@ options:
   formatter: stylish
   merge-default-rules: false
 rules:
+  attribute-quotes:
+    - 1
+    - include: true
+  bem-depth: 0
   border-zero:
     - 1
     - convention: '0'
   brace-style:
     - 1
-    - allow-single-line: true
+    - allow-single-line: false
   clean-import-paths:
-    - 1
+    - 0
     - filename-extension: false
       leading-underscore: false
+  empty-args: 0
   empty-line-between-blocks:
     - 1
+    - include: true
     - ignore-single-line-rulesets: true
-  extends-before-declarations: 0
-  extends-before-mixins: 0
+  extends-before-declarations: 1
+  extends-before-mixins: 1
   final-newline:
     - 1
     - include: true
   force-attribute-nesting: 1
   force-element-nesting: 1
-  force-pseudo-nesting: 0
+  force-pseudo-nesting: 1
   function-name-format:
     - 1
     - allow-leading-underscore: true
@@ -45,25 +51,27 @@ rules:
     - 2
     - size: 4
   leading-zero:
-    - 0
-    - include: false
+    - 1
+    - include: true
   mixin-name-format:
     - 1
     - allow-leading-underscore: true
       convention: hyphenatedlowercase
-  mixins-before-declarations: 0
+  mixins-before-declarations: 1
   nesting-depth:
     - 1
-    - max-depth: 6
-  no-color-keyword: 1
+    - max-depth: 4
+  no-color-keywords: 1
   no-color-literals:
     - allow-rgba: true
+  no-combinators: 0
   no-css-comments: 1
   no-debug: 1
+  no-disallowed-properties: 0
   no-duplicate-properties: 1
   no-empty-rulesets: 1
   no-extends: 0
-  no-ids: 0
+  no-ids: 1
   no-important: 1
   no-invalid-hex: 1
   no-mergeable-selectors: 1
@@ -71,23 +79,27 @@ rules:
     - 1
     - extra-properties: []
   no-qualifying-elements:
-    - 0
+    - 1
     - allow-element-with-attribute: false
       allow-element-with-class: false
       allow-element-with-id: false
   no-trailing-zero: 1
-  no-transition-all: 0
+  no-trailing-whitespace: 1
+  no-transition-all: 1
+  no-universal-selectors: 0
   no-url-protocols: 1
   no-vendor-prefixes:
     - 0
     - additional-identifiers: []
       excluded-identifiers: []
+  one-declaration-per-line: 1
   placeholder-in-extend: 0
   placeholder-name-format:
     - 1
     - allow-leading-underscore: true
       convention: hyphenatedlowercase
   property-sort-order: 0
+  pseudo-element: 0
   quotes:
     - 1
     - style: single
@@ -105,6 +117,9 @@ rules:
     - 1
     - include: true
   space-after-comma:
+    - 1
+    - include: true
+  space-around-operator:
     - 1
     - include: true
   space-before-bang:

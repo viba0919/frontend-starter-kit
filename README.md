@@ -2,12 +2,12 @@
 
 ### Install npm dependencies
 
-npm install
+npm run start
 
 
-### Install bower dependencies
+### Build project
 
-bower install
+npm run build
 
 
 ### Gulp tasks
@@ -15,5 +15,8 @@ bower install
 Task name | Description
 --------- | -----------
 gulp | Build project
+gulp build-css | Build css
+gulp build-js | Build js
+gulp build-html | Build html
 gulp watch | Build project and watch files
 gulp lint | Lint .scss and .js files

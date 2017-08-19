@@ -1,0 +1,5 @@
+.page {
+    @include margin(null auto);
+    width: 100%;
+    max-width: $body-max-width;
+}

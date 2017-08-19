@@ -1,8 +1,9 @@
 // Custom variables
 @import 'base/vars';
 
-// Bootstrap
-@import 'plugins/plugins';
+// Plugins
+@import '../../node_modules/bourbon/app/assets/stylesheets/bourbon';
+@import '../../node_modules/bourbon-neat/app/assets/stylesheets/neat';
 
 // Base
 @import 'base/base';
@@ -11,3 +12,6 @@
 @import 'base/typography';
 
 // Modules
+@import 'modules/page';
+@import 'modules/footer';
+@import 'modules/footer';

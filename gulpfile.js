@@ -4,9 +4,7 @@
  ******************************************************
  */
 
-var production = false,
-
-    root = './',
+var root = './',
 
     dirPublic         = root + 'public/',
     dirPublicCss      = dirPublic + 'css/',
@@ -18,7 +16,8 @@ var production = false,
     dirSourceJs          = dirSource + 'js/',
     dirSourceJsUtilities = dirSourceJs + 'utilities/',
     dirSourcePug         = dirSource + 'pug/',
-    dirSourceVendor      = dirSource + 'vendor/',
+
+    dirNodeModules       = './node_modules/',
 
     fileNames = {
         css: {
@@ -34,7 +33,10 @@ var production = false,
     config = {
         css: {
             concat: [
+                // Vendors
+                dirNodeModules + 'normalize.css/normalize.css',
                 // ---> Add path to new plugin .css file here
+
                 dirSourceCss + fileNames.css.sass
             ]
         },
@@ -60,11 +62,9 @@ var production = false,
         js: {
             concat: [
                 // Vendors
-                dirSourceVendor + 'jquery/dist/jquery.js',
-                dirSourceVendor + 'bootstrap-sass/assets/javascripts/bootstrap.js',
+                dirNodeModules + 'jquery/dist/jquery.js',
                 // ---> Add path to new plugin .js file here
 
-                // Utilities
                 dirSourceJsUtilities + '**/*.js'
             ],
             lint: [
@@ -111,6 +111,9 @@ var production = false,
         },
         pug: {
             pretty: true
+        },
+        rename: {
+            suffix: '.min'
         }
     };
 
@@ -127,7 +130,6 @@ var gulp         = require('gulp'),
     concatCss    = require('gulp-concat-css'),
     cssBeautify  = require('gulp-cssbeautify'),
     eslint       = require('gulp-eslint'),
-    gulpIf       = require('gulp-if'),
     prettify     = require('gulp-jsbeautifier'),
     notify       = require('gulp-notify'),
     plumber      = require('gulp-plumber'),
@@ -148,7 +150,10 @@ var gulp         = require('gulp'),
 gulp.task('concat-css', function () {
     return gulp.src(config.css.concat)
         .pipe(concatCss(fileNames.css.main, options.concatCss))
-        .pipe(gulpIf(production, minifyCSS(), cssBeautify(options.cssBeautify)))
+        .pipe(cssBeautify(options.cssBeautify))
+        .pipe(gulp.dest(dirPublicCss))
+        .pipe(minifyCSS())
+        .pipe(rename(options.rename))
         .pipe(gulp.dest(dirPublicCss));
 });
 
@@ -178,7 +183,10 @@ gulp.task('concat-js', function() {
     return gulp.src(config.js.concat)
         .pipe(plumber(options.plumber))
         .pipe(concat(fileNames.js.main))
-        .pipe(gulpIf(production, uglify(), prettify(options.prettify)))
+        .pipe(prettify(options.prettify))
+        .pipe(gulp.dest(dirPublicJs))
+        .pipe(uglify())
+        .pipe(rename(options.rename))
         .pipe(gulp.dest(dirPublicJs));
 });
 
@@ -215,6 +223,19 @@ gulp.task('lint', function() {
 });
 
 
+gulp.task('build-css', function() {
+    return runSequence('compile-sass', 'concat-css');
+});
+
+gulp.task('build-js', function() {
+    return runSequence('concat-js');
+});
+
+gulp.task('build-html', function() {
+    return runSequence('compile-pug');
+});
+
+
 gulp.task('build-dev', function() {
     return runSequence(
         ['compile-sass', 'concat-js', 'compile-pug'],
@@ -236,14 +257,14 @@ gulp.task('default', function() {
  */
 gulp.task('watch', ['build-dev'], function () {
     gulp.watch(config.sass.watch, function() {
-        runSequence('compile-sass', 'concat-css');
+        runSequence('build-css');
     });
 
     gulp.watch(config.js.watch, function() {
-        runSequence('concat-js');
+        runSequence('build-js');
     });
 
     gulp.watch(config.pug.watch, function() {
-        runSequence('compile-pug');
+        runSequence('build-html');
     });
 });

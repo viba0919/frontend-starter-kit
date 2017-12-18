@@ -31,6 +31,8 @@ var root = './',
     },
 
     config = {
+        port: 9090,
+        devBaseUrl: 'http://192.168.56.100',
         css: {
             concat: [
                 // Vendors
@@ -138,6 +140,7 @@ var gulp         = require('gulp'),
     sassLint     = require('gulp-sass-lint'),
     uglify       = require('gulp-uglify'),
     runSequence  = require('run-sequence'),
+    connect      = require('gulp-connect'),
     pug          = require('gulp-pug');
 
 
@@ -154,7 +157,8 @@ gulp.task('concat-css', function () {
         .pipe(gulp.dest(dirPublicCss))
         .pipe(minifyCSS())
         .pipe(rename(options.rename))
-        .pipe(gulp.dest(dirPublicCss));
+        .pipe(gulp.dest(dirPublicCss))
+        .pipe(connect.reload());
 });
 
 gulp.task('compile-sass', function () {
@@ -187,7 +191,8 @@ gulp.task('concat-js', function() {
         .pipe(gulp.dest(dirPublicJs))
         .pipe(uglify())
         .pipe(rename(options.rename))
-        .pipe(gulp.dest(dirPublicJs));
+        .pipe(gulp.dest(dirPublicJs))
+        .pipe(connect.reload());
 });
 
 gulp.task('lint-js', function () {
@@ -209,6 +214,23 @@ gulp.task('compile-pug', function() {
         .pipe(plumber(options.plumber))
         .pipe(pug(options.pug))
         .pipe(gulp.dest(dirPublic))
+        .pipe(connect.reload());
+});
+
+
+
+/*
+ ******************************************************
+ *  Web server
+ ******************************************************
+ */
+gulp.task('serve', ['build-dev'], function () {
+    connect.server({
+        root: dirPublic,
+        port: config.port,
+        base: config.devBaseUrl,
+        livereload: true
+    });
 });
 
 
@@ -255,7 +277,7 @@ gulp.task('default', function() {
  *  Watchers
  ******************************************************
  */
-gulp.task('watch', ['build-dev'], function () {
+gulp.task('watch', ['serve'], function () {
     gulp.watch(config.sass.watch, function() {
         runSequence('build-css');
     });
